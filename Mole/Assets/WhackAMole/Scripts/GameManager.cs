@@ -45,7 +45,7 @@ namespace WhackAMole
             while (IsPlaying)
             {
                 yield return board.Moles[index].Appear(rules.transitionSeconds, rules.upSeconds);
-                index = (index + 1) % board.Moles.Length;
+                index = UnityEngine.Random.Range(0, board.Moles.Length - 1);               //(index + 1) % board.Moles.Length;
                 yield return new WaitForSeconds(rules.intervalSeconds);
             }
         }
@@ -60,7 +60,11 @@ namespace WhackAMole
         {
             if (!IsPlaying || Remaining <= 0) return;
             if (target && target.TryHit()) { Hits++; Score += rules.pointsPerHit; }
-            else Misses++;
+            else
+            {
+                Misses++;
+                CameraShake.Instance.Shake(0.3f, 0.3f);
+            }
             Changed?.Invoke();
         }
         public void EndGame()
